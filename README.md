@@ -1,68 +1,68 @@
 # Hindsight
 
-**Institutional memory that talks back.** Teams make hundreds of decisions, then forget them — and six months later someone confidently proposes the exact thing that was rejected, or quietly contradicts a compliance constraint nobody remembers. Hindsight is an agent that remembers every decision your team has ever made, and *audits every new proposal against all of them* using Cognee's hybrid graph-vector memory.
+**Institutional memory that talks back.** Teams make hundreds of decisions, then forget them — and six months later someone confidently proposes the exact thing that was already rejected, or quietly contradicts a compliance constraint nobody remembers. Hindsight remembers every decision your team has ever made, and *audits every new proposal against all of them* using Cognee's hybrid graph-vector memory — running live on **Cognee Cloud**.
 
-Built for **The Hangover Part AI** hackathon — Cognee Cloud track.
+Built for **The Hangover Part AI** hackathon — *Best Use of Cognee Cloud*.
+
+## Screenshot
+
+![Hindsight in action](screenshots/conflict.png)
+*Ask about a past decision and Hindsight explains the reasoning; propose a new one and it stamps **⚠ CONFLICT ON RECORD** against the exact decisions it violates — all running live on Cognee Cloud (see the badge, top right).*
 
 ## The one-sentence demo
 
-> You type "let's add Firebase Analytics to the mobile app" and Hindsight stamps it **⚠ CONFLICT ON RECORD** — because eight months ago the team decided all PII stays in the EU, and it traversed the graph to connect those two facts.
+> You type "let's add Firebase Analytics to the mobile app" and Hindsight stamps it **⚠ CONFLICT ON RECORD** — because months ago the team decided all customer data stays in the EU, and it traversed the graph to connect those two facts.
 
 That connection (proposal → analytics SDK → device identifiers → US servers → GDPR decision D-002) is a multi-hop *graph* traversal. A plain vector store finds similar text; Cognee finds the chain of consequences.
 
-## How it uses the full Cognee memory lifecycle
+## Why this needs a knowledge graph
 
-| Operation | Where it lives in Hindsight |
-|---|---|
-| `remember()` | **Record** mode writes decisions permanently to the graph; conversation turns go to session cache via `session_id` |
-| `recall()` | **Ask** mode (graph-routed Q&A) and **Propose** mode (contradiction audit via a custom `system_prompt`) |
-| `improve()` / memify | The **improve()** button promotes today's session discussion into permanent institutional memory |
-| `forget()` | Retires superseded decisions — memory that prunes itself, not just grows |
-| session feedback | Every answer has *useful / off-base* buttons wired to `cognee.session.add_feedback`, so retrieval quality adapts with use |
+The decision that blocks "Firebase Analytics" never contains the word "Firebase." Keyword or vector search matches words, so it misses the conflict entirely. Hindsight stores decisions as a **graph of connected facts** and walks the connections until it hits a rule you'd be breaking — reasoning a vector store can't do.
+
+## What it does
+
+| Mode | Cognee operation | What happens |
+|---|---|---|
+| **Ask** | `recall()` | Graph-routed Q&A — answers *why* a decision was made, tracing the chain |
+| **Propose** | `recall()` + audit prompt | Stamps a new idea **⚠ CONFLICT** or **✓ CLEAR** against all prior decisions |
+| **Record** | `remember()` | Writes a new decision to the graph — and it's enforced immediately |
+
+**Memory that learns live:** record a new rule, and the very next proposal is audited against it. And because the memory lives on Cognee Cloud, restart the server and everything's still there.
 
 ## Quick start
 
 ```bash
-pip install cognee fastapi uvicorn
+python -m venv .venv
+# Windows:  .venv\Scripts\activate      macOS/Linux:  source .venv/bin/activate
+pip install -r requirements.txt
 
-cp .env.example .env      # add your keys (see below)
-python seed.py            # load six realistic, interlinked decision records
+cp .env.example .env      # fill in your keys (below)
+python seed.py            # loads six interlinked decision records
 uvicorn app:app --port 8080
 # open http://localhost:8080
 ```
 
-### Cognee Cloud (hackathon track requirement)
+### Cognee Cloud connection
 
-Set your Cloud connection in `.env`:
+Sign up for Cognee Cloud, redeem code `COGNEE-35` for the free Developer plan, and copy your instance URL + API key from the dashboard into `.env`:
 
 ```
-COGNEE_CLOUD_API_URL=<your cloud instance url>
-COGNEE_CLOUD_AUTH_TOKEN=<your cloud api key>
 LLM_API_KEY=<your llm provider key>
+COGNEE_SERVICE_URL=<your tenant url, e.g. https://tenant-xxxx.aws.cognee.ai>
+COGNEE_API_KEY=<your cloud api key>
 CACHING=true
 CACHE_BACKEND=fs
 ```
 
-Sign up for Cognee Cloud and redeem code `COGNEE-35` for the free Developer plan. Check the Cognee Cloud docs for your instance URL — configuration may vary by plan.
-
-## Demo flow (3 minutes)
-
-1. **Ask** — "Why are we on eu-central-1?" → recall() traverses D-007 → D-002 → D-004 and explains the migration *and its cause*.
-2. **Propose** — "Switch primary datastore to MongoDB" → **⚠ CONFLICT** stamp citing D-001 and its rationale.
-3. **Propose** — "Add Firebase Analytics" → conflict via the multi-hop GDPR chain. The wow moment.
-4. **View graph** — live Cognee `visualize_graph` render, watch the web of decisions.
-5. Click **useful** on a good answer → feedback stored, retrieval adapts.
-6. **improve()** — promote the session; re-open the graph and see new nodes.
-7. Restart the server, ask again — *it still remembers.* No hangover.
+When `COGNEE_SERVICE_URL` is set, the app calls `cognee.serve()` at startup and every operation runs on your cloud instance — confirmed by the green **Cognee Cloud · connected** badge in the UI.
 
 ## Architecture
 
 ```
 static/index.html ── fetch ──► app.py (FastAPI) ──► memory.py ──► Cognee Cloud
                                                      │  remember / recall /
-                                                     │  improve / forget /
-                                                     │  session feedback /
-                                                     └─ visualize_graph
+                                                     │  serve() connection /
+                                                     └─ graph visualization
 ```
 
-Three files of application code. The memory layer *is* the product — exactly as the judges intend.
+Three files of application code. The memory layer *is* the product — the graph, the reasoning, and the persistence all live on Cognee Cloud.
