@@ -59,6 +59,31 @@ CACHE_BACKEND=fs
 
 When `COGNEE_SERVICE_URL` is set, the app calls `cognee.serve()` at startup and every operation runs on your cloud instance — confirmed by the green **Cognee Cloud · connected** badge in the UI.
 
+## Deploy
+
+Hindsight is a standard FastAPI app with a `Dockerfile`, so it runs on any container host (Render, Railway, Fly.io).
+
+**Render (one-click blueprint):**
+1. Push the repo (it includes `Dockerfile` + `render.yaml`).
+2. On render.com → **New → Blueprint** → connect this repo.
+3. Set the secret env vars in the dashboard: `LLM_API_KEY`, `COGNEE_SERVICE_URL`, `COGNEE_API_KEY`, and `COGNEE_DATASET` (the dataset your `seed.py` run created — see `.active_dataset`).
+4. Deploy.
+
+**Any Docker host:**
+```bash
+docker build -t hindsight .
+docker run -p 8080:8080 \
+  -e LLM_API_KEY=... \
+  -e COGNEE_SERVICE_URL=... \
+  -e COGNEE_API_KEY=... \
+  -e COGNEE_DATASET=... \
+  hindsight
+```
+
+Notes:
+- Seed the dataset once (`python seed.py`), then point the deploy at it via `COGNEE_DATASET` — the graph lives on Cognee Cloud, so the server itself stays stateless.
+- The app has no authentication; anyone with the URL can use it (and consume your Cognee Cloud credits). Keep the URL private or add auth before sharing widely.
+
 ## Architecture
 
 ```

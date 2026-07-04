@@ -1,0 +1,19 @@
+# Render blueprint — deploy with one click from the repo.
+# On render.com: New → Blueprint → connect this repo. Then set the secret
+# env vars (marked sync:false) in the dashboard.
+services:
+  - type: web
+    name: hindsight
+    runtime: docker
+    plan: standard        # cognee is memory-heavy; the free plan may OOM
+    envVars:
+      - key: LLM_API_KEY
+        sync: false
+      - key: COGNEE_SERVICE_URL
+        sync: false
+      - key: COGNEE_API_KEY
+        sync: false
+      - key: COGNEE_DATASET
+        sync: false        # the dataset name your seed run created on the cloud
+      - key: PYTHONUNBUFFERED
+        value: "1"

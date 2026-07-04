@@ -1,4 +1,4 @@
-cognee
+cognee==1.2.2
 fastapi
-uvicorn
+uvicorn[standard]
 python-dotenv

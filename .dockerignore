@@ -1,0 +1,12 @@
+# Never bake secrets or local state into the image
+.env
+.active_dataset
+
+# Local/dev cruft
+.venv/
+.git/
+__pycache__/
+*.pyc
+graph_snapshot.html
+.pagecheck.html
+screenshots/

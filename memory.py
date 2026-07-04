@@ -32,6 +32,12 @@ def _resolve_dataset() -> str:
     dataset to `.active_dataset` on each run (cloud deletion is unreliable,
     so we never reuse/clear a name — we roll forward to a clean one). The
     app follows that marker; falls back to a default if it's absent."""
+    # Explicit override — used in deployment, where .active_dataset (which
+    # seed.py writes locally) isn't present. Set COGNEE_DATASET to the dataset
+    # name your seed run created on the cloud.
+    env = os.getenv("COGNEE_DATASET")
+    if env:
+        return env
     marker = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".active_dataset")
     try:
         with open(marker, encoding="utf-8") as f:
@@ -92,6 +98,17 @@ async def connect_cloud() -> str:
     Set COGNEE_SERVICE_URL (your instance URL from the Cognee Cloud
     dashboard) and COGNEE_API_KEY (your cloud API key) in .env.
     """
+    # Ensure the local relational scaffold exists. Even in cloud mode the
+    # wrapper calls get_default_user() and the session APIs, which need a
+    # local SQLite DB — a fresh container (unlike a dev install) has none,
+    # so create it once here. Idempotent; safe to call on every startup.
+    try:
+        from cognee.low_level import setup
+
+        await setup()
+    except Exception:
+        pass
+
     url = os.getenv("COGNEE_SERVICE_URL") or os.getenv("COGNEE_CLOUD_API_URL")
     key = os.getenv("COGNEE_API_KEY") or os.getenv("COGNEE_CLOUD_AUTH_TOKEN")
     placeholders = {"", "your-instance", "your_cloud_api_key"}
