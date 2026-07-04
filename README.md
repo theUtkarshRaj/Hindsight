@@ -9,6 +9,9 @@ Built for **The Hangover Part AI** hackathon — *Best Use of Cognee Cloud*.
 ![Hindsight in action](screenshots/conflict.png)
 *Ask about a past decision and Hindsight explains the reasoning; propose a new one and it stamps **⚠ CONFLICT ON RECORD** against the exact decisions it violates — all running live on Cognee Cloud (see the badge, top right).*
 
+![The knowledge graph](screenshots/graph.png)
+*The live knowledge graph, rendered straight from Cognee Cloud — every decision and the connections that let Hindsight reason across them.*
+
 ## The one-sentence demo
 
 > You type "let's add Firebase Analytics to the mobile app" and Hindsight stamps it **⚠ CONFLICT ON RECORD** — because months ago the team decided all customer data stays in the EU, and it traversed the graph to connect those two facts.
