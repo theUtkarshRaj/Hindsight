@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 800" font-family="'Segoe UI', system-ui, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5a6f6a"/>
+    </marker>
+    <style>
+      .box { fill:#ffffff; stroke:#c6d2ce; stroke-width:1.5; }
+      .title { fill:#12303a; font-size:19px; font-weight:700; }
+      .sub { fill:#5c6f6a; font-size:13px; font-family:'IBM Plex Mono','Consolas',monospace; }
+      .lbl { fill:#5a6f6a; font-size:12.5px; font-family:'IBM Plex Mono','Consolas',monospace; }
+      .flow { stroke:#5a6f6a; stroke-width:1.6; }
+      .chip { fill:#1c3b44; stroke:#2f8f80; stroke-width:1.3; }
+      .chiptxt { fill:#eaf3f1; font-size:14px; font-weight:600; }
+    </style>
+  </defs>
+
+  <!-- background -->
+  <rect x="0" y="0" width="960" height="800" rx="16" fill="#eef3f1"/>
+
+  <!-- header -->
+  <text x="480" y="52" text-anchor="middle" fill="#12303a" font-size="27" font-weight="700">Hindsight — Architecture</text>
+  <text x="480" y="78" text-anchor="middle" fill="#5c6f6a" font-size="14">Institutional decision memory · three thin app layers on top of Cognee Cloud</text>
+
+  <!-- Layer 1: Browser -->
+  <rect class="box" x="150" y="105" width="660" height="92" rx="10"/>
+  <rect x="150" y="105" width="6" height="92" rx="3" fill="#2f8f80"/>
+  <text class="title" x="176" y="140">Browser · <tspan font-family="'IBM Plex Mono',monospace" font-size="16">static/index.html</tspan></text>
+  <text class="sub" x="176" y="166">Ask &#183; Propose &#183; Record</text>
+  <text class="sub" x="176" y="185">decision ledger UI, amber CONFLICT stamp, live &#9729; "Cognee Cloud &#183; connected" badge</text>
+
+  <!-- arrow 1 -->
+  <line class="flow" x1="480" y1="200" x2="480" y2="248" marker-end="url(#arrow)"/>
+  <text class="lbl" x="496" y="228">fetch() JSON over HTTP</text>
+
+  <!-- Layer 2: FastAPI -->
+  <rect class="box" x="150" y="250" width="660" height="92" rx="10"/>
+  <rect x="150" y="250" width="6" height="92" rx="3" fill="#12303a"/>
+  <text class="title" x="176" y="285">FastAPI backend · <tspan font-family="'IBM Plex Mono',monospace" font-size="16">app.py</tspan></text>
+  <text class="sub" x="176" y="311">POST /api/ask &#183; /api/propose &#183; /api/remember</text>
+  <text class="sub" x="176" y="330">GET /api/graph &#183; /api/status &#8226; on startup: connect_cloud()</text>
+
+  <!-- arrow 2 -->
+  <line class="flow" x1="480" y1="345" x2="480" y2="393" marker-end="url(#arrow)"/>
+  <text class="lbl" x="496" y="373">async function calls</text>
+
+  <!-- Layer 3: memory.py -->
+  <rect class="box" x="150" y="395" width="660" height="92" rx="10"/>
+  <rect x="150" y="395" width="6" height="92" rx="3" fill="#e0912f"/>
+  <text class="title" x="176" y="430">Memory layer · <tspan font-family="'IBM Plex Mono',monospace" font-size="16">memory.py</tspan>  <tspan fill="#e0912f" font-size="13" font-weight="600">← the product</tspan></text>
+  <text class="sub" x="176" y="456">remember() &#183; recall() (Ask + contradiction audit) &#183; render_graph()</text>
+  <text class="sub" x="176" y="475">connect_cloud() &#8594; cognee.serve() routes every op to the cloud</text>
+
+  <!-- arrow 3 -->
+  <line class="flow" x1="480" y1="490" x2="480" y2="538" marker-end="url(#arrow)"/>
+  <text class="lbl" x="496" y="518">HTTPS &#183; X-Api-Key</text>
+
+  <!-- Layer 4: Cognee Cloud -->
+  <rect x="150" y="540" width="660" height="150" rx="10" fill="#12303a" stroke="#0c2129"/>
+  <text x="176" y="574" fill="#ffffff" font-size="19" font-weight="700">Cognee Cloud <tspan fill="#8fb7af" font-size="14" font-weight="500">— your tenant (graph + vector + LLM, hosted)</tspan></text>
+  <!-- chips -->
+  <rect class="chip" x="176" y="592" width="196" height="46" rx="8"/>
+  <text class="chiptxt" x="274" y="620" text-anchor="middle">Knowledge Graph</text>
+  <rect class="chip" x="382" y="592" width="196" height="46" rx="8"/>
+  <text class="chiptxt" x="480" y="620" text-anchor="middle">Vector store</text>
+  <rect class="chip" x="588" y="592" width="196" height="46" rx="8"/>
+  <text class="chiptxt" x="686" y="620" text-anchor="middle">LLM reasoning</text>
+  <text x="176" y="668" fill="#b9cfca" font-size="13" font-family="'IBM Plex Mono',monospace">multi-hop graph traversal &#183; persists across restarts &#183; app stays stateless</text>
+
+  <!-- reasoning callout -->
+  <rect x="150" y="712" width="660" height="66" rx="10" fill="#fdf6ea" stroke="#e0912f" stroke-width="1.5"/>
+  <text x="170" y="738" fill="#7a4d0b" font-size="13" font-weight="700">THE WOW (a graph-only leap):</text>
+  <text x="170" y="759" fill="#7a4d0b" font-size="12.5" font-family="'IBM Plex Mono',monospace">"Add Firebase Analytics" &#8594; SDK &#8594; device IDs &#8594; US servers &#8594; EU-residency D-002 &#8594; &#9888; CONFLICT</text>
+</svg>

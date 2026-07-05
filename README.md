@@ -86,11 +86,6 @@ Notes:
 
 ## Architecture
 
-```
-static/index.html ── fetch ──► app.py (FastAPI) ──► memory.py ──► Cognee Cloud
-                                                     │  remember / recall /
-                                                     │  serve() connection /
-                                                     └─ graph visualization
-```
+![Architecture](screenshots/architecture.svg)
 
-Three files of application code. The memory layer *is* the product — the graph, the reasoning, and the persistence all live on Cognee Cloud.
+Three thin layers of application code — browser UI, FastAPI, and the `memory.py` wrapper. The memory layer *is* the product: the graph, the reasoning, and the persistence all live on Cognee Cloud, so the app itself stays stateless.
